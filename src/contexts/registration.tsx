@@ -28,8 +28,13 @@ export function useRegisterationContext() {
     return useContext(RegisterationContext);
 }
 
+const mock = [
+    { id: 0, firstname: 'Surasit', lastname: 'Suwannara', phoneNumber: '0872237007', timestamp: new Date().toLocaleString('th'), seat: 0 },
+    { id: 1, firstname: 'Joker', lastname: 'Suwannara', phoneNumber: '0872237007', timestamp: new Date().toLocaleString('th'), seat: 1 }
+]
+
 function RegisterationProvider({ children }: any) {
-    const [userRegister, setUserRegister] = useState<Array<IUserRegisterState>>([]);
+    const [userRegister, setUserRegister] = useState<Array<IUserRegisterState>>(mock);
     const [seatData, setSeatData] = useState<Array<ISeatState>>([]);
     const [maxRegister, setMaxRegister] = useState<number>(20);
 
@@ -40,7 +45,7 @@ function RegisterationProvider({ children }: any) {
     const createSeat = () => {
         const newSeat: Array<ISeatState> = [];
         for (let i = 0; i < maxRegister; i++) {
-            newSeat.push({ seatId: i, status: false });
+            newSeat.push({ seatId: i, status: i === 0 || i === 1 ? true : false });
         }
         setSeatData(newSeat);
     }
@@ -131,6 +136,33 @@ function RegisterationProvider({ children }: any) {
         }
     }
 
+    function deleteUserRegiter(modalSeatId: number) {
+        // debugger;
+        // console.log('modalSeatId : ', modalSeatId);
+        if (getSeatStatusFromSeatID(modalSeatId) && userRegister.length > 0) {
+            const userDataSeatIdSelect: any = getUserDataFromSeatID(modalSeatId);
+            let newUserRegister: Array<IUserRegisterState> = [];
+            for (let i = 0; i < userRegister.length; i++) {
+                // console.log(`${userRegister[i].seat} !== ${userDataSeatIdSelect.seat}`);
+                if (userRegister[i].seat !== userDataSeatIdSelect.seat) {
+                    newUserRegister.push(userRegister[i]);
+                }
+            }
+            console.log(newUserRegister);
+            // userRegister = newUserRegister
+            setUserRegister(newUserRegister);
+            setStatusOfSeat(modalSeatId, false);
+            // console.log('userRegister : ', userRegister);
+            // console.log('newUserRegister : ', newUserRegister);
+            return newUserRegister;
+        }
+        return userRegister;
+    }
+
+    function getUserRegisterData() {
+        return userRegister;
+    }
+
     const userRegisterStore = {
         seatData,
         userRegister,
@@ -143,7 +175,9 @@ function RegisterationProvider({ children }: any) {
             getUserDataFromSeatID,
             getSeatStatusFromSeatID,
             setStatusOfSeat,
-            changeSeat
+            changeSeat,
+            deleteUserRegiter,
+            getUserRegisterData
         }
     }
 

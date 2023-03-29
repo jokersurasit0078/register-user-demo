@@ -164,6 +164,9 @@ function RegisterManagement() {
         if (!isEmpty(selectUserIdRadio)) {
             userRegisterAction.changeSeat(modalSeatId, selectUserIdRadio);
             setOpen(false);
+        } else {
+            setDataUserFilter(userRegisterAction.deleteUserRegiter(modalSeatId));
+            setOpen(false);
         }
     }
 
@@ -179,6 +182,7 @@ function RegisterManagement() {
     }
 
     const renderTableRegisteredUser = () => {
+        console.log('dataUserFilter : ', dataUserFilter);
         return (
             <div className={styles.cardTable}>
                 <p className={styles.titleForm}>
@@ -326,7 +330,7 @@ function RegisterManagement() {
                         ? <RadioGroup className={styles.groupRadio} name='radio-name-user-change' value={selectUserIdRadio} onChange={setSelectUserIdRadio}>
                             {getDataInModal().map((item: any) => {
                                 return (
-                                    <Radio className={styles.rowRadio} value={item.id}>{`${item.firstname} ${item.lastname}`}</Radio>
+                                    <Radio key={'KEY_RADIO_'+item.id} className={styles.rowRadio} value={item.id}>{`${item.firstname} ${item.lastname}`}</Radio>
                                 )
                             })}
                         </RadioGroup>
